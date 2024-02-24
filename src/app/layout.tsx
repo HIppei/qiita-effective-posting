@@ -1,10 +1,10 @@
 import Logo from '@/components/Logo';
-import type { Metadata } from 'next';
-import { Inter, Space_Mono } from 'next/font/google';
-import Link from 'next/link';
-import './globals.css';
 import Header from '@/components/header';
 import NavMenu from '@/components/nav-menu';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import TokenProvider from '@/providers/token-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,20 +20,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="flex">
-          <div className="w-2/12 py-2 px-6">
-            <Logo />
+        <TokenProvider>
+          <div className="flex">
+            <div className="w-2/12 px-6 py-2">
+              <Logo />
+            </div>
+            <div className="w-10/12">
+              <Header />
+            </div>
           </div>
-          <div className="w-10/12">
-            <Header />
+          <div className="flex">
+            <div className="w-2/12">
+              <NavMenu />
+            </div>
+            <div className="h-screen w-10/12 bg-gray-50">{children}</div>
           </div>
-        </div>
-        <div className="flex">
-          <div className="w-2/12">
-            <NavMenu />
-          </div>
-          <div className="bg-gray-50 w-10/12 h-screen">{children}</div>
-        </div>
+        </TokenProvider>
       </body>
     </html>
   );
