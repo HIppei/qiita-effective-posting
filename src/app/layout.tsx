@@ -21,19 +21,21 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <TokenProvider>
-          <div className="flex">
-            <div className="w-2/12 px-6 py-2">
-              <Logo />
+          <div className="min-w-[1080px]">
+            <div className="flex">
+              <div className="w-2/12 px-6 py-2">
+                <Logo />
+              </div>
+              <div className="w-10/12">
+                <Header />
+              </div>
             </div>
-            <div className="w-10/12">
-              <Header />
+            <div className="flex h-screen">
+              <div className="w-2/12">
+                <NavMenu />
+              </div>
+              <div className="h-full w-10/12 border bg-gray-100 drop-shadow-sm">{children}</div>
             </div>
-          </div>
-          <div className="flex">
-            <div className="w-2/12">
-              <NavMenu />
-            </div>
-            <div className="h-screen w-10/12 bg-gray-50">{children}</div>
           </div>
         </TokenProvider>
       </body>

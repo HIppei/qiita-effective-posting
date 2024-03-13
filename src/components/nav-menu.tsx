@@ -4,9 +4,9 @@ export default function NavMenu() {
   return (
     <div className="grid grid-cols-1 text-lg font-bold">
       <Link className="py-4 pl-6 hover:bg-gray-200" href="/">
-        Home
+        Dashboard
       </Link>
-      <Link className="py-4 pl-6 hover:bg-gray-200" href="">
+      {/* <Link className="py-4 pl-6 hover:bg-gray-200" href="">
         Like
       </Link>
       <Link className="py-4 pl-6 hover:bg-gray-200" href="">
@@ -14,7 +14,7 @@ export default function NavMenu() {
       </Link>
       <Link className="py-4 pl-6 hover:bg-gray-200" href="">
         Article Type
-      </Link>
+      </Link> */}
     </div>
   );
 }

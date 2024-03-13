@@ -1,11 +1,8 @@
 'use client';
 
+import AppBarChart from '@/components/chart/app-bar-chart';
 import { UserInfoContext } from '@/providers/token-provider';
-import dynamic from 'next/dynamic';
-import { memo, useContext } from 'react';
-import { Area, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts';
-
-const AreaChart = dynamic(() => import('recharts').then((recharts) => recharts.AreaChart), { ssr: false });
+import { memo, useContext, useState } from 'react';
 
 // Override console.error
 // This is a hack to suppress the warning about missing defaultProps in recharts library as of version 2.12
@@ -16,95 +13,110 @@ console.error = (...args: any) => {
   error(...args);
 };
 
+// This defines the type that charts and tabls will use.
+// Raw data itself remains on memory as is.
+export type Article = {
+  index: number;
+  title: string;
+  url: string;
+  createdAt: string;
+  views: number;
+  likes: number;
+  stocks: number;
+  likesRate: string;
+  stocksRate: string;
+};
+
+// Type definition based on Qiita API repsponse.
+// Only properties that will be used are defined.
+export type QiitaArticle = {
+  title: string;
+  url: string;
+  created_at: string;
+  page_views_count: number;
+  likes_count: number;
+  stocks_count: number;
+};
+
 function HomeComponent() {
-  const data = [
-    {
-      name: 'Page A',
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      name: 'Page B',
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      name: 'Page C',
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: 'Page D',
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      name: 'Page E',
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      name: 'Page F',
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      name: 'Page G',
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-  ];
-
   const { userInfo } = useContext(UserInfoContext);
+  const [data, setData] = useState<Article[] | undefined>(undefined);
 
-  const update = async () => {
+  const getData = async () => {
     const headers = { authorization: `Bearer ${userInfo.token}` };
     const res = await fetch(`https://qiita.com/api/v2/items?query=user:${userInfo.user}`, {
       method: 'GET',
       headers: headers,
     });
 
-    const result = await res.json();
-    console.log(result);
+    if (res.status === 200) {
+      const result = transformData(await res.json());
+      setData(result);
+    } else if (res.status === 401) {
+      window.alert('Authorization failed. Please check your access token.');
+    } else {
+      console.error('Error Status:', res.status);
+      console.error('Error Message:', await res.json());
+      return;
+    }
+  };
+
+  const transformData = (data: QiitaArticle[]): Article[] => {
+    data.sort((a, b) => {
+      const date1 = new Date(a.created_at);
+      const date2 = new Date(b.created_at);
+
+      if (date1 > date2) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
+
+    const articles = data.map<Article>((item, index) => {
+      return {
+        index: index + 1,
+        title: item.title,
+        url: item.url,
+        createdAt: item.created_at,
+        views: item.page_views_count,
+        likes: item.likes_count,
+        stocks: item.stocks_count,
+        likesRate: ((item.likes_count / item.page_views_count) * 100).toFixed(2),
+        stocksRate: (((item.stocks_count ?? 0) / item.page_views_count) * 100).toFixed(2),
+      };
+    });
+
+    return articles;
   };
 
   return (
-    <div>
-      <div className="w-full text-center">
+    <div className="grid grid-cols-1 gap-y-12">
+      <div className="mr-4 flex flex-row-reverse">
         <button
-          onClick={update}
-          className="ml-4 mt-3 rounded-lg border bg-blue-300 px-3 py-2 text-lg hover:bg-blue-500"
+          onClick={getData}
+          className="mr-5 mt-5 rounded-lg border bg-blue-300 px-3 py-2 text-lg hover:bg-blue-500"
         >
           Get Data
         </button>
       </div>
-      <div className="mt-10">
-        <AreaChart width={730} height={250} data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-          <defs>
-            <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-            </linearGradient>
-            <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <XAxis dataKey="name" />
-          <YAxis />
-          <CartesianGrid strokeDasharray="3 3" />
-          <Tooltip />
-          <Area type="monotone" dataKey="uv" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
-          <Area type="monotone" dataKey="pv" stroke="#82ca9d" fillOpacity={1} fill="url(#colorPv)" />
-        </AreaChart>
-      </div>
+      {data && (
+        <>
+          <div>
+            <AppBarChart
+              title="Likes & Stocs"
+              data={data}
+              dataKeys={[
+                { name: 'Likes', key: 'likes', color: '#8884d8' },
+                { name: 'Stocks', key: 'stocks', color: '#82ca9d' },
+              ]}
+            />
+          </div>
+          <div>
+            <AppBarChart title="Views" data={data} dataKeys={[{ name: 'Views', key: 'views', color: '#EC9F1F' }]} />
+          </div>
+        </>
+      )}
     </div>
   );
 }
