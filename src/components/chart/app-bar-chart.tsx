@@ -2,6 +2,8 @@
 
 import { Article } from '@/app/page';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { ReactElement } from 'react';
 import { Bar, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { ContentType } from 'recharts/types/component/Tooltip';
@@ -35,6 +37,16 @@ export default function AppBarChart({
     }
   };
 
+  const XaxisTick: (props: any) => ReactElement = ({ x, y, payload }) => (
+    <g transform={`translate(${x},${y})`}>
+      <text x={0} y={0} dy={16}>
+        <Link target="_blank" href={data[payload['index']].url}>
+          {payload['index']}
+        </Link>
+      </text>
+    </g>
+  );
+
   return (
     <div className="h-92 w-full overflow-x-auto">
       <p id="chart-title" className="mb-4 text-center font-semibold">
@@ -59,7 +71,7 @@ export default function AppBarChart({
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="index" />
+        <XAxis dataKey="index" tick={<XaxisTick />} />
         <YAxis />
         <Tooltip content={<CustomToolTip />} />
         <Legend />
