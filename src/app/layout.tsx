@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <TokenProvider>
-          <div className="min-w-[1080px]">
+          <div className="h-screen min-w-[1080px] overflow-hidden">
             <div className="flex">
               <div className="w-2/12 px-6 py-2">
                 <Logo />
@@ -30,11 +30,11 @@ export default function RootLayout({
                 <Header />
               </div>
             </div>
-            <div className="flex h-screen">
+            <div className="flex h-full">
               <div className="w-2/12">
                 <NavMenu />
               </div>
-              <div className="h-full w-10/12 border bg-gray-100 drop-shadow-sm">{children}</div>
+              <div className="w-10/12 overflow-y-auto border bg-gray-100 drop-shadow-sm">{children}</div>
             </div>
           </div>
         </TokenProvider>
