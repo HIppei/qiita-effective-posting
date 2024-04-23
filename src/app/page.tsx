@@ -1,8 +1,9 @@
 'use client';
 
 import AppBarChart from '@/components/chart/app-bar-chart';
+import ToggleButtons from '@/components/toggle-buttons';
 import { UserInfoContext } from '@/providers/token-provider';
-import { memo, useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 
 // Override console.error
 // This is a hack to suppress the warning about missing defaultProps in recharts library as of version 2.12
@@ -38,9 +39,26 @@ export type QiitaArticle = {
   stocks_count: number;
 };
 
-function HomeComponent() {
+export default function Home() {
   const { userInfo } = useContext(UserInfoContext);
-  const [data, setData] = useState<Article[] | undefined>(undefined);
+  const [data, setData] = useState<Article[] | undefined>();
+  const [display, setDisplay] = useState<'chart' | 'table'>('chart');
+
+  const memoData = useMemo(() => {
+    return data;
+  }, [JSON.stringify(data)]);
+
+  const likesDataKeys = useMemo<{ name: string; key: keyof Article; color?: string | undefined }[]>(
+    () => [
+      { name: 'Likes', key: 'likes', color: '#8884d8' },
+      { name: 'Stocks', key: 'stocks', color: '#82ca9d' },
+    ],
+    []
+  );
+  const viewsDataKeys = useMemo<{ name: string; key: keyof Article; color?: string | undefined }[]>(
+    () => [{ name: 'Views', key: 'views', color: '#EC9F1F' }],
+    []
+  );
 
   const getData = async () => {
     const headers = { authorization: `Bearer ${userInfo.token}` };
@@ -91,36 +109,29 @@ function HomeComponent() {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-y-12">
-      <div className="mr-4 flex flex-row-reverse">
+    <div className="grid h-full grid-cols-1 gap-y-12 overflow-y-auto">
+      <div className="flex p-6">
+        <div className="w-2/12">
+          <ToggleButtons display={display} setDisplay={setDisplay} />
+        </div>
+        <span className="w-9/12" />
         <button
           onClick={getData}
-          className="mr-5 mt-5 rounded-lg border bg-blue-300 px-3 py-2 text-lg hover:bg-blue-500"
+          className="h-fit w-1/12 rounded-lg border bg-blue-300 px-3 py-2 text-lg hover:bg-blue-500"
         >
           Get Data
         </button>
       </div>
-      {data && (
-        <>
+      {memoData && (
+        <div className={`${display === 'table' && 'hidden'}`}>
           <div>
-            <AppBarChart
-              title="Likes & Stocs"
-              data={data}
-              dataKeys={[
-                { name: 'Likes', key: 'likes', color: '#8884d8' },
-                { name: 'Stocks', key: 'stocks', color: '#82ca9d' },
-              ]}
-            />
+            <AppBarChart title="Likes & Stocs" data={memoData} dataKeys={likesDataKeys} />
           </div>
           <div>
-            <AppBarChart title="Views" data={data} dataKeys={[{ name: 'Views', key: 'views', color: '#EC9F1F' }]} />
+            <AppBarChart title="Views" data={memoData} dataKeys={viewsDataKeys} />
           </div>
-        </>
+        </div>
       )}
     </div>
   );
 }
-
-const Home = memo(HomeComponent);
-
-export default Home;

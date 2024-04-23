@@ -1,10 +1,10 @@
 import Logo from '@/components/Logo';
 import Header from '@/components/header';
 import NavMenu from '@/components/nav-menu';
+import TokenProvider from '@/providers/token-provider';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import TokenProvider from '@/providers/token-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,8 +21,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <TokenProvider>
-          <div className="h-screen min-w-[1080px] overflow-hidden">
-            <div className="flex">
+          <div className="h-screen min-w-[1080px] overflow-y-hidden">
+            <div className="flex h-[10%]">
               <div className="w-2/12 px-6 py-2">
                 <Logo />
               </div>
@@ -30,11 +30,11 @@ export default function RootLayout({
                 <Header />
               </div>
             </div>
-            <div className="flex h-full">
+            <div className="flex h-[90%]">
               <div className="w-2/12">
                 <NavMenu />
               </div>
-              <div className="w-10/12 overflow-y-auto border bg-gray-100 drop-shadow-sm">{children}</div>
+              <div className="w-10/12 border bg-gray-100 drop-shadow-sm">{children}</div>
             </div>
           </div>
         </TokenProvider>

@@ -3,14 +3,14 @@
 import { Article } from '@/app/page';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { ReactElement } from 'react';
+import { ReactElement, memo } from 'react';
 import { Bar, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { ContentType } from 'recharts/types/component/Tooltip';
 
 const BarChart = dynamic(() => import('recharts').then((recharts) => recharts.BarChart), { ssr: false });
 
-export default function AppBarChart({
+function AppBarChart({
   title,
   data,
   dataKeys,
@@ -41,14 +41,14 @@ export default function AppBarChart({
     <g transform={`translate(${x},${y})`}>
       <text x={0} y={0} dy={16}>
         <Link target="_blank" href={data[payload['index']].url}>
-          {payload['index']}
+          {payload['index'] + 1}
         </Link>
       </text>
     </g>
   );
 
   return (
-    <div className="h-92 w-full overflow-x-auto">
+    <div className="h-full w-full overflow-x-auto">
       <p id="chart-title" className="mb-4 text-center font-semibold">
         {title}
       </p>
@@ -82,3 +82,5 @@ export default function AppBarChart({
     </div>
   );
 }
+
+export default memo(AppBarChart);
