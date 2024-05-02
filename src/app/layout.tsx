@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <TokenProvider>
-          <div className="h-screen min-w-[1080px] overflow-y-hidden">
+          <div className="h-screen min-w-[1080px]">
             <div className="flex h-[10%]">
               <div className="w-2/12 px-6 py-2">
                 <Logo />

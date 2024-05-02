@@ -1,6 +1,7 @@
 'use client';
 
 import AppBarChart from '@/components/chart/app-bar-chart';
+import AppTable from '@/components/table/app-table';
 import ToggleButtons from '@/components/toggle-buttons';
 import { UserInfoContext } from '@/providers/token-provider';
 import { useContext, useMemo, useState } from 'react';
@@ -110,7 +111,7 @@ export default function Home() {
 
   return (
     <div className="grid h-full grid-cols-1 gap-y-12 overflow-y-auto">
-      <div className="flex p-6">
+      <div className="flex px-6 pt-6">
         <div className="w-2/12">
           <ToggleButtons display={display} setDisplay={setDisplay} />
         </div>
@@ -123,14 +124,19 @@ export default function Home() {
         </button>
       </div>
       {memoData && (
-        <div className={`${display === 'table' && 'hidden'}`}>
-          <div>
-            <AppBarChart title="Likes & Stocs" data={memoData} dataKeys={likesDataKeys} />
+        <>
+          <div className={`${display === 'table' && 'hidden'}`}>
+            <div>
+              <AppBarChart title="Likes & Stocs" data={memoData} dataKeys={likesDataKeys} />
+            </div>
+            <div>
+              <AppBarChart title="Views" data={memoData} dataKeys={viewsDataKeys} />
+            </div>
           </div>
-          <div>
-            <AppBarChart title="Views" data={memoData} dataKeys={viewsDataKeys} />
+          <div className={`${display === 'chart' && 'hidden'} w-[80%] px-6 pb-10`}>
+            <AppTable data={memoData} />
           </div>
-        </div>
+        </>
       )}
     </div>
   );
