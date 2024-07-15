@@ -6,6 +6,7 @@ const cspHeaders = `
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
   async headers() {
     return [
       {
