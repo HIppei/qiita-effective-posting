@@ -43,6 +43,7 @@ export default function Header() {
         placeholder="Your access token"
         value={inputToken}
         onChange={(e) => setInputToken(e.target.value)}
+        type="password"
       />
       <button
         onClick={setInfo}
