@@ -23,7 +23,7 @@ export default function RootLayout({
         <TokenProvider>
           <div className="h-screen min-w-[1080px]">
             <div className="flex h-[10%]">
-              <div className="w-2/12 px-6 py-2">
+              <div className="w-2/12 max-w-72 px-6 py-2">
                 <Logo />
               </div>
               <div className="w-10/12">
@@ -31,7 +31,7 @@ export default function RootLayout({
               </div>
             </div>
             <div className="flex h-[90%]">
-              <div className="w-2/12">
+              <div className="w-2/12 max-w-72">
                 <NavMenu />
               </div>
               <div className="w-10/12 border bg-gray-100 drop-shadow-sm">{children}</div>

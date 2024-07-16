@@ -2,6 +2,7 @@ import { Monoton } from 'next/font/google';
 import Link from 'next/link';
 
 const monoton = Monoton({ weight: '400', subsets: ['latin'] });
+
 export default function Logo() {
   return (
     <Link href="/">
