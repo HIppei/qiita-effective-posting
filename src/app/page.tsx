@@ -40,8 +40,6 @@ export type QiitaArticle = {
   stocks_count: number;
 };
 
-const a = '';
-
 export default function Home() {
   const { userInfo } = useContext(UserInfoContext);
   const [data, setData] = useState<Article[] | undefined>();
