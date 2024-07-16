@@ -2,7 +2,7 @@ const cspHeaders = `
           default-src 'self';
           script-src 'self' 'unsafe-eval' 'unsafe-inline';
           style-src 'self' 'unsafe-inline';
-          connect-src ws: ${process.env.NEXT_PUBLIC_QIITA_API_ENDPOINT};`;
+          connect-src 'self' ws: ${process.env.NEXT_PUBLIC_QIITA_API_ENDPOINT};`;
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
