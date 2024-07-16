@@ -37,7 +37,8 @@ function AppBarChart({
     }
   };
 
-  const XaxisTick: (props: any) => ReactElement = ({ x, y, payload }) => (
+  // eslint-disable-next-line no-unused-vars
+  const XaxisTick: (_props: any) => ReactElement = ({ x, y, payload }) => (
     <g transform={`translate(${x},${y})`}>
       <text x={0} y={0} dy={16}>
         <Link target="_blank" href={data[payload['index']].url}>

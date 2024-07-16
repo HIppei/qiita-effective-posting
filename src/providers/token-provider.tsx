@@ -1,6 +1,6 @@
 'use client';
 
-import { Dispatch, SetStateAction, createContext, useState } from 'react';
+import React, { Dispatch, SetStateAction, createContext, useState } from 'react';
 
 export const UserInfoContext = createContext<{
   userInfo: { user: string; token: string };
