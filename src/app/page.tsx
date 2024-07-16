@@ -44,10 +44,9 @@ export default function Home() {
   const { userInfo } = useContext(UserInfoContext);
   const [data, setData] = useState<Article[] | undefined>();
   const [display, setDisplay] = useState<'chart' | 'table'>('chart');
+  const dataDeps = JSON.stringify(data);
 
-  const memoData = useMemo(() => {
-    return data;
-  }, [JSON.stringify(data)]);
+  const memoData = useMemo(() => data, [dataDeps]);
 
   const likesDataKeys = useMemo<{ name: string; key: keyof Article; color?: string | undefined }[]>(
     () => [
