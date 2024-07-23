@@ -3,8 +3,8 @@
 import AppBarChart from '@/components/chart/app-bar-chart';
 import AppTable from '@/components/table/app-table';
 import ToggleButtons from '@/components/toggle-buttons';
-import { UserInfoContext } from '@/providers/token-provider';
-import { useContext, useMemo, useState } from 'react';
+import { useUserInfoContext } from '@/providers/token-provider';
+import { useMemo, useState } from 'react';
 
 // Override console.error
 // This is a hack to suppress the warning about missing defaultProps in recharts library as of version 2.12
@@ -41,7 +41,7 @@ export type QiitaArticle = {
 };
 
 export default function Home() {
-  const { userInfo } = useContext(UserInfoContext);
+  const { userInfo } = useUserInfoContext();
   const [data, setData] = useState<Article[] | undefined>();
   const [display, setDisplay] = useState<'chart' | 'table'>('chart');
   const dataDeps = JSON.stringify(data);
@@ -63,8 +63,10 @@ export default function Home() {
   const getData = async () => {
     const headers = { authorization: `Bearer ${userInfo.token}` };
     const res = await fetch(`https://qiita.com/api/v2/items?query=user:${userInfo.user}`, {
-      method: 'GET',
       headers: headers,
+    }).catch((err) => {
+      console.error(err);
+      throw new Error('Failed to fetch data');
     });
 
     if (res.status === 200) {
@@ -117,7 +119,9 @@ export default function Home() {
         <span className="w-9/12" />
         <button
           onClick={getData}
-          className="h-fit w-1/12 rounded-lg border bg-blue-300 px-3 py-2 text-lg hover:bg-blue-500"
+          className="h-fit w-1/12 rounded-lg border bg-blue-300 px-3 py-2 text-lg hover:bg-blue-500 disabled:bg-gray-200"
+          disabled={!userInfo.user || !userInfo.token}
+          data-testid="get-data"
         >
           Get Data
         </button>

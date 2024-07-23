@@ -1,4 +1,7 @@
 {
+  "env": {
+    "jest": true
+  },
   "extends": [
     "eslint:recommended",
     "next/core-web-vitals"
